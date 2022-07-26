@@ -1,8 +1,7 @@
 use generate_diary_template::generate_diary_template;
-
-use chrono::Local;
+use time::OffsetDateTime;
 
 fn main() {
-    let local_date = Local::today();
+    let local_date = OffsetDateTime::now_local().unwrap().date();
     println!("{}", generate_diary_template(&local_date));
 }

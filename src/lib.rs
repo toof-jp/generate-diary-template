@@ -30,7 +30,7 @@ mod tests {
         let date = Date::from_calendar_date(2018, Month::January, 1).unwrap();
         assert_eq!(
             generate_diary_template(&date),
-            r#"# 2018-01-01
+            r"# 2018-01-01
 ## 2018-01-01
 
 ## 2018-01-02
@@ -45,7 +45,7 @@ mod tests {
 
 ## 2018-01-07
 
-"#
+"
         );
     }
 }

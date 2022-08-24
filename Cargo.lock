@@ -3,7 +3,7 @@
 version = 3
 
 [[package]]
-name = "generate-diary-template"
+name = "diary-template-generator"
 version = "0.1.0"
 dependencies = [
  "time",

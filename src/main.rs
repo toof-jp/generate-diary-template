@@ -1,4 +1,4 @@
-use generate_diary_template::generate_diary_template;
+use diary_template_generator::generate_diary_template;
 use time::OffsetDateTime;
 
 fn main() {

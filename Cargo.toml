@@ -1,5 +1,5 @@
 [package]
-name = "generate-diary-template"
+name = "diary-template-generator"
 version = "0.1.0"
 authors = ["toof-jp <toof.jp.mail@gmail.com>"]
 edition = "2018"

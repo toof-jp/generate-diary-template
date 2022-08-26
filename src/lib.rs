@@ -1,10 +1,15 @@
 use std::fmt::Write as _;
 use time::format_description;
 use time::Date;
+use time::Weekday;
 
-pub fn generate_diary_template(start_date: &Date) -> String {
+pub fn generate_diary_template(date: &Date) -> String {
     let mut diary_template = String::new();
-    let mut date = Date::clone(start_date);
+    let mut date = Date::clone(date);
+
+    while date.weekday() != Weekday::Monday {
+        date = date.previous_day().unwrap();
+    }
 
     let format = format_description::parse("[year]-[month]-[day]").unwrap();
     writeln!(&mut diary_template, "# {}", &date.format(&format).unwrap()).unwrap();
@@ -27,23 +32,23 @@ mod tests {
 
     #[test]
     fn test() {
-        let date = Date::from_calendar_date(2018, Month::January, 1).unwrap();
+        let date = Date::from_calendar_date(2022, Month::January, 1).unwrap();
         assert_eq!(
             generate_diary_template(&date),
-            r"# 2018-01-01
-## 2018-01-01
+            r"# 2021-12-27
+## 2021-12-27
 
-## 2018-01-02
+## 2021-12-28
 
-## 2018-01-03
+## 2021-12-29
 
-## 2018-01-04
+## 2021-12-30
 
-## 2018-01-05
+## 2021-12-31
 
-## 2018-01-06
+## 2022-01-01
 
-## 2018-01-07
+## 2022-01-02
 
 "
         );

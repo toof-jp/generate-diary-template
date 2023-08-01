@@ -1,28 +1,24 @@
+use anyhow::{Context, Result};
 use std::fmt::Write as _;
 use time::format_description;
 use time::Date;
 use time::Weekday;
 
-pub fn generate_diary_template(date: &Date) -> String {
+pub fn generate_diary_template(date: &Date) -> Result<String> {
     let mut diary_template = String::new();
     let mut date = Date::clone(date);
 
     while date.weekday() != Weekday::Monday {
-        date = date.previous_day().unwrap();
+        date = date.previous_day().context("")?;
     }
 
-    let format = format_description::parse("[year]-[month]-[day]").unwrap();
-    writeln!(&mut diary_template, "# {}", &date.format(&format).unwrap()).unwrap();
+    let format = format_description::parse("[year]-[month]-[day]")?;
+    writeln!(&mut diary_template, "# {}", &date.format(&format)?)?;
     for _ in 0..7 {
-        writeln!(
-            &mut diary_template,
-            "## {}\n",
-            &date.format(&format).unwrap()
-        )
-        .unwrap();
-        date = date.next_day().unwrap();
+        writeln!(&mut diary_template, "## {}\n", &date.format(&format)?)?;
+        date = date.next_day().context("")?;
     }
-    diary_template
+    Ok(diary_template)
 }
 
 #[cfg(test)]

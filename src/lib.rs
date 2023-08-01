@@ -27,10 +27,10 @@ mod tests {
     use time::Month;
 
     #[test]
-    fn test() {
+    fn test() -> Result<()> {
         let date = Date::from_calendar_date(2022, Month::January, 1).unwrap();
         assert_eq!(
-            generate_diary_template(&date),
+            generate_diary_template(&date)?,
             r"# 2021-12-27
 ## 2021-12-27
 
@@ -48,5 +48,6 @@ mod tests {
 
 "
         );
+        Ok(())
     }
 }

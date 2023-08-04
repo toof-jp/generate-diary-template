@@ -2,12 +2,12 @@ use anyhow::{Context, Result};
 use std::fmt::Write as _;
 use time::format_description;
 use time::Date;
-use time::Weekday;
+use time::Weekday::*;
 
 pub fn get_first_day_of_week(date: &Date) -> Result<Date> {
     let mut date = Date::clone(date);
 
-    while date.weekday() != Weekday::Monday {
+    while date.weekday() != Monday {
         date = date.previous_day().context("")?;
     }
 
@@ -19,9 +19,9 @@ pub fn generate_diary_template(date: &Date) -> Result<String> {
     let mut date = Date::clone(date);
     let format = format_description::parse("[year]-[month]-[day]")?;
 
-    writeln!(&mut diary_template, "# {}", &date.format(&format)?)?;
+    write!(&mut diary_template, "# {}\n", &date.format(&format)?)?;
     for _ in 0..7 {
-        writeln!(&mut diary_template, "## {}\n", &date.format(&format)?)?;
+        write!(&mut diary_template, "## {}\n\n", &date.format(&format)?)?;
         date = date.next_day().context("")?;
     }
 
@@ -32,7 +32,6 @@ pub fn generate_diary_template(date: &Date) -> Result<String> {
 mod tests {
     use super::*;
     use time::macros::date;
-    use time::Weekday::*;
 
     #[test]
     fn test_get_first_day_of_week() -> Result<()> {
@@ -81,7 +80,7 @@ mod tests {
 
         assert_eq!(
             generate_diary_template(&date)?,
-            r"# 2021-12-27
+            "# 2021-12-27
 ## 2021-12-27
 
 ## 2021-12-28

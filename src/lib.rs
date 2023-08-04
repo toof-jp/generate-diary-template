@@ -24,11 +24,11 @@ pub fn generate_diary_template(date: &Date) -> Result<String> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use time::Month;
+    use time::macros::date;
 
     #[test]
     fn test() -> Result<()> {
-        let date = Date::from_calendar_date(2022, Month::January, 1).unwrap();
+        let date = date!(2022 - 01 - 01);
         assert_eq!(
             generate_diary_template(&date)?,
             r"# 2021-12-27

@@ -1,8 +1,8 @@
-use anyhow::{Context, Result};
 use std::fmt::Write as _;
-use time::format_description;
-use time::Date;
-use time::Weekday::*;
+
+use anyhow::{Context, Result};
+use time::{format_description, Date, Weekday::*};
+use wasm_bindgen::prelude::*;
 
 pub fn get_first_day_of_week(date: &Date) -> Result<Date> {
     let mut date = Date::clone(date);
@@ -14,12 +14,24 @@ pub fn get_first_day_of_week(date: &Date) -> Result<Date> {
     Ok(date)
 }
 
+#[wasm_bindgen]
+pub fn get_first_day_of_week_from_str(date_str: &str) -> Result<String, JsError> {
+    let format = format_description::parse("[year]-[month]-[day]")
+        .map_err(|e| JsError::new(&e.to_string()))?;
+
+    let date = Date::parse(date_str, &format).map_err(|e| JsError::new(&e.to_string()))?;
+
+    get_first_day_of_week(&date)
+        .map_err(|e| JsError::new(&e.to_string()))
+        .and_then(|d| d.format(&format).map_err(|e| JsError::new(&e.to_string())))
+}
+
 pub fn generate_diary_template(date: &Date) -> Result<String> {
     let mut diary_template = String::new();
     let mut date = Date::clone(date);
     let format = format_description::parse("[year]-[month]-[day]")?;
 
-    write!(&mut diary_template, "# {}\n", &date.format(&format)?)?;
+    writeln!(&mut diary_template, "# {}", &date.format(&format)?)?;
     for _ in 0..7 {
         write!(&mut diary_template, "## {}\n\n", &date.format(&format)?)?;
         date = date.next_day().context("")?;
@@ -28,10 +40,21 @@ pub fn generate_diary_template(date: &Date) -> Result<String> {
     Ok(diary_template)
 }
 
+#[wasm_bindgen]
+pub fn generate_diary_template_from_str(date_str: &str) -> Result<String, JsError> {
+    let format = format_description::parse("[year]-[month]-[day]")
+        .map_err(|e| JsError::new(&e.to_string()))?;
+
+    let date = Date::parse(date_str, &format).map_err(|e| JsError::new(&e.to_string()))?;
+
+    generate_diary_template(&date).map_err(|e| JsError::new(&e.to_string()))
+}
+
 #[cfg(test)]
 mod tests {
-    use super::*;
     use time::macros::date;
+
+    use super::*;
 
     #[test]
     fn test_get_first_day_of_week() -> Result<()> {
@@ -80,7 +103,8 @@ mod tests {
 
         assert_eq!(
             generate_diary_template(&date)?,
-            "# 2021-12-27
+            "\
+# 2021-12-27
 ## 2021-12-27
 
 ## 2021-12-28

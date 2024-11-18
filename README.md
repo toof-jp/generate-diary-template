@@ -25,3 +25,6 @@ $ cargo run --quiet
 ## 2023-08-06
 
 ```
+
+## Related
+[diary-template-generator-frontend](https://github.com/toof-jp/diary-template-generator-frontend)
